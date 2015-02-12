@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript">
+var RELATEDPOSTS_SETTINGS = {
+    BlogURL: 'garafu.blogspot.jp',
+    MaxResults: 5,
+    ThumbnailVisible: false
+};
+    </script>
+    <script type="text/javascript" src="//www.google.com/jsapi"></script>
+</head>
+<body>
+    <div id='blogger.relatedposts.label'>
+        IIS,jasmine,JavaScript,jQuery
+    </div>
+    <div id='blogger.relatedposts.output'></div>
+    <div style="display:none">
+        <script type="text/javascript" src="../lib/closure-library/closure/goog/base.js"></script>
+        <script type="text/javascript" src="../src/deps.js"></script>
+        <script type="text/javascript">
+        goog.require('garafu.blogger.relatedposts.Main');
+        </script>
+    </div>
+</body>
+</html>
