@@ -42,6 +42,7 @@ var google = {
 var RELATEDPOSTS_SETTINGS = {
     BlogUrl: 'garafu.blogspot.jp',
     MaxResults: 5,
+    TitleVisible: true,
     ThumbnailVisible: true,
     SnippetVisible: true,
     LabelElementId: '',

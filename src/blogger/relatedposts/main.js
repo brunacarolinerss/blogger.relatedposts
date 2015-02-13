@@ -8,11 +8,10 @@ goog.require('garafu.dom');
 goog.require('garafu.events');
 
 
-
-
 // --------------------------------------------------------------------------------
 //  constructor
 // --------------------------------------------------------------------------------
+
 /**
 * @class
 * @public
@@ -20,8 +19,6 @@ goog.require('garafu.events');
 */
 garafu.blogger.relatedposts.Main = function () {
 };
-
-
 
 
 // --------------------------------------------------------------------------------
@@ -33,15 +30,18 @@ garafu.blogger.relatedposts.Main = function () {
 */
 garafu.blogger.relatedposts.Main.Settings = null;
 
+
 /**
 * Posts archives.
 */
 garafu.blogger.relatedposts.Main.archives = [];
 
+
 /**
 * Number of labels.
 */
 garafu.blogger.relatedposts.Main.labelCount = 0;
+
 
 /**
 * Number of recived feeds.
@@ -52,8 +52,6 @@ garafu.blogger.relatedposts.Main.recievedCount = 0;
 // --------------------------------------------------------------------------------
 //  static method
 // --------------------------------------------------------------------------------
-
-
 
 
 // --------------------------------------------------------------------------------
@@ -72,6 +70,7 @@ garafu.blogger.relatedposts.Main.initialize = function () {
     Main.Settings = {
         BlogUrl: settings.BlogUrl || 'garafu.blogspot.jp',
         MaxResults: settings.MaxResults || 5,
+        TitleVisible: typeof(settings.TitleVisible) === 'boolean' ? settings.TitleVisible : true,
         ThumbnailVisible: typeof(settings.ThumbnailVisible) === 'boolean' ? settings.ThumbnailVisible : true,
         SnippetVisible: typeof(settings.SnippetVisible) === 'boolean' ? settings.SnippetVisible : true,
         LabelElementId: settings.LabelElementId || 'blogger.relatedposts.label',
@@ -203,13 +202,15 @@ garafu.blogger.relatedposts.Main.createPostItem = function (entry) {
     }
 
     // Create title element.
-    title = document.createElement('div');
-    title.className = 'item-title';
-    ancher = document.createElement('a');
-    ancher.href = entry.link;
-    ancher.appendChild(document.createTextNode(entry.title))
-    title.appendChild(ancher);
-    content.appendChild(title);
+    if (Main.Settings.TitleVisible) {
+        title = document.createElement('div');
+        title.className = 'item-title';
+        ancher = document.createElement('a');
+        ancher.href = entry.link;
+        ancher.appendChild(document.createTextNode(entry.title))
+        title.appendChild(ancher);
+        content.appendChild(title);
+    }
 
     // Create summary element.
     if (Main.Settings.SnippetVisible) {
