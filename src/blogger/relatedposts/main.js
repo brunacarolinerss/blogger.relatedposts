@@ -81,7 +81,7 @@ garafu.blogger.relatedposts.Main.initialize = function () {
 
     // Get label information.
     element = document.getElementById(Main.Settings.LabelElementId);
-    labels = element.innerText.replace(/^\s*|\s$/g, '').split(',');
+    labels = element.innerText.split(',');
     Main.labelCount = labels.length;
 
     // Load create related posts.
@@ -109,7 +109,7 @@ garafu.blogger.relatedposts.Main.loadRelatedPosts = function (labels) {
         // Create url.
         url = 'http://' + Main.Settings.BlogUrl + '/';
         url += 'feeds/posts/default/-/';
-        url += encodeURIComponent(labels[i]);
+        url += encodeURIComponent((labels[i] || '').replace(/^\s*/, '').replace(/\s*$/, ''));
 
         // Downlaod feed data.
         feed = new google.feeds.Feed(url);
