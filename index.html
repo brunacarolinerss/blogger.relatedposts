@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>blogger.relatedposts by garafu</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>blogger.relatedposts</h1>
+        <p>Blogger plugin for createing related post list.</p>
+
+        <p class="view"><a href="https://github.com/garafu/blogger.relatedposts">View the Project on GitHub <small>garafu/blogger.relatedposts</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/garafu/blogger.relatedposts/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/garafu/blogger.relatedposts/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/garafu/blogger.relatedposts">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>This plugin generate related posts list atuomaticaly according to the label data.</p>
+
+<h3>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h3>
+
+<p>Main feature is followin.</p>
+
+<ul>
+<li>Generate related posts list automaticaly.</li>
+</ul>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>This plugin requires "google feed api". so, include <code>https://www.google.com/jsapi</code> and load <code>feeds</code>.
+Configuration of this plugin is following.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> RELATEDPOSTS_SETTINGS <span class="pl-k">=</span> {
+    BlogUrl<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>garafu.blogspot.jp<span class="pl-pds">'</span></span>,
+    MaxResults<span class="pl-k">:</span> <span class="pl-c1">5</span>,
+    TitleVisible<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+    ThumbnailVisible<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+    SnippetVisible<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+    NoThumbnailImageUrl<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>http://4.bp.blogspot.com/-9mCCaXTpn9I/VN4hDMsFXlI/AAAAAAAAC6U/i84N2Ng37Ik/s1600/noimage.png<span class="pl-pds">'</span></span>,
+    NoRelatedPostsMessage<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>No Related Posts...<span class="pl-pds">'</span></span>,
+    LabelElementId<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
+    OutputElementId<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>
+};</pre></div>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/garafu">garafu</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
