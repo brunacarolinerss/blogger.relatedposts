@@ -162,6 +162,7 @@ garafu.blogger.relatedposts.Main.feed_onload = function (result) {
 garafu.blogger.relatedposts.Main.createPostList = function (entries) {
     var Main = garafu.blogger.relatedposts.Main;
     var n, i, length, ul, li, div, output;
+    var CurrentPostUrl = document.location.href;
     var MaxResults = Main.Settings.MaxResults;
 
     // Get the number of displaying entries.
@@ -171,20 +172,33 @@ garafu.blogger.relatedposts.Main.createPostList = function (entries) {
         return;
     }
 
+    // Create list root element.
     ul = document.createElement('ul');
 
+    // Create item elements.
     for (i = 0; i < length; i++) {
+        // Get random number for selecting post.
         n = Math.floor(entries.length * Math.random());
 
-        div = Main.createPostItem(entries[n]);
+        // Whether the entry is current post or not.
+        if (CurrentPostUrl !== entries[n].link) {
+            // Create item element.
+            div = Main.createPostItem(entries[n]);
 
-        li = document.createElement('li');
-        li.appendChild(div);
-        ul.appendChild(li);
+            // Append and construct list.
+            li = document.createElement('li');
+            li.appendChild(div);
+            ul.appendChild(li);
+        } else {
+            // Revert iteration.
+            i -= 1;
+        }
 
+        // Remove selected post.
         entries.splice(n, 1);
     }
 
+    // Show related posts list.
     output = document.getElementById(Main.Settings.OutputElementId);
     output.appendChild(ul);
 };
