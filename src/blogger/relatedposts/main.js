@@ -109,7 +109,7 @@ garafu.blogger.relatedposts.Main.loadRelatedPosts = function (labels) {
         // Create url.
         url = 'http://' + Main.Settings.BlogUrl + '/';
         url += 'feeds/posts/default/-/';
-        url += labels[i];
+        url += encodeURIComponent(labels[i]);
 
         // Downlaod feed data.
         feed = new google.feeds.Feed(url);
