@@ -73,7 +73,7 @@ garafu.blogger.relatedposts.Main.initialize = function () {
         TitleVisible: typeof(settings.TitleVisible) === 'boolean' ? settings.TitleVisible : true,
         ThumbnailVisible: typeof(settings.ThumbnailVisible) === 'boolean' ? settings.ThumbnailVisible : true,
         SnippetVisible: typeof(settings.SnippetVisible) === 'boolean' ? settings.SnippetVisible : true,
-        NoThumbnailImageUrl: typeof(settings.NoThumbnailImageUrl) !== 'undefined' ? settings.NoThumbnailImageUrl : 'http://4.bp.blogspot.com/-9mCCaXTpn9I/VN4hDMsFXlI/AAAAAAAAC6U/i84N2Ng37Ik/s1600/noimage.png',
+        NoThumbnailImageUrl: typeof(settings.NoThumbnailImageUrl) !== 'undefined' ? settings.NoThumbnailImageUrl : '//4.bp.blogspot.com/-9mCCaXTpn9I/VN4hDMsFXlI/AAAAAAAAC6U/i84N2Ng37Ik/s1600/noimage.png',
         NoRelatedPostsMessage: typeof(settings.NoRelatedPostsMessage) !== 'undefined' ? settings.NoRelatedPostsMessage : 'No Related Posts...',
         LabelElementId: settings.LabelElementId || 'blogger.relatedposts.label',
         OutputElementId: settings.OutputElementId || 'blogger.relatedposts.output'
@@ -107,7 +107,8 @@ garafu.blogger.relatedposts.Main.loadRelatedPosts = function (labels) {
 
     for (i = labels.length; i--;) {
         // Create url.
-        url = 'http://' + Main.Settings.BlogUrl + '/';
+        url = window.location.protocol;
+        url += '//' + Main.Settings.BlogUrl + '/';
         url += 'feeds/posts/default/-/';
         url += encodeURIComponent((labels[i] || '').replace(/^\s*/, '').replace(/\s*$/, ''));
 
