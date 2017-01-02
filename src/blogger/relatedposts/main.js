@@ -68,7 +68,7 @@ garafu.blogger.relatedposts.Main.initialize = function () {
     // Create settings data
     settings = RELATEDPOSTS_SETTINGS || {};
     Main.Settings = {
-        BlogUrl: settings.BlogUrl || 'garafu.blogspot.jp',
+        BlogUrl: settings.BlogUrl || window.location.hostname,
         MaxResults: settings.MaxResults || 5,
         TitleVisible: typeof(settings.TitleVisible) === 'boolean' ? settings.TitleVisible : true,
         ThumbnailVisible: typeof(settings.ThumbnailVisible) === 'boolean' ? settings.ThumbnailVisible : true,
