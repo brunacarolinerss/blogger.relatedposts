@@ -259,6 +259,9 @@ garafu.blogger.relatedposts.Main.prototype.createPostItem = function (entry) {
     // Create container element.
     content = document.createElement('div');
     content.className = 'item-content';
+    anchor = document.createElement('a');
+    anchor.href = regexp.exec(entry.link[entry.link.length - 1].href)[1];
+    content.appendChild(anchor);
 
     // Create thumbnail element, if required.
     if (Settings.ThumbnailVisible) {
@@ -267,15 +270,12 @@ garafu.blogger.relatedposts.Main.prototype.createPostItem = function (entry) {
         if (url) {
             thumbnail = document.createElement('div');
             thumbnail.className = 'item-thumbnail';
-            anchor = document.createElement('a');
-            anchor.href = entry.link;
             image = document.createElement('img');
             image.style.width = '72px';
             image.style.height = '72px';
             image.src = url;
-            anchor.appendChild(image);
-            thumbnail.appendChild(anchor);
-            content.appendChild(thumbnail);
+            thumbnail.appendChild(image);
+            anchor.appendChild(thumbnail);
         }
     }
 
@@ -283,11 +283,8 @@ garafu.blogger.relatedposts.Main.prototype.createPostItem = function (entry) {
     if (Settings.TitleVisible) {
         title = document.createElement('div');
         title.className = 'item-title';
-        anchor = document.createElement('a');
-        anchor.href = regexp.exec(entry.link[entry.link.length - 1].href)[1];
-        anchor.appendChild(document.createTextNode(entry.title.$t))
-        title.appendChild(anchor);
-        content.appendChild(title);
+        title.appendChild(document.createTextNode(entry.title.$t))
+        anchor.appendChild(title);
     }
 
     // Create summary element.
@@ -295,7 +292,7 @@ garafu.blogger.relatedposts.Main.prototype.createPostItem = function (entry) {
         summary = document.createElement('div');
         summary.className = 'item-snippet';
         summary.appendChild(document.createTextNode(this.createSunippet(entry.content.$t || '')));
-        content.appendChild(summary);
+        anchor.appendChild(summary);
     }
 
     return content;
