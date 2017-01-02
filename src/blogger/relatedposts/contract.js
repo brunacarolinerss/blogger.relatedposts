@@ -3,21 +3,91 @@
 */
 var contract = {
     feed: {
-        author: '',
-        description: '',
-        entries: [{
-            author: '',
-            categories: [''],
-            content: '',
-            contentSnippet: '',
-            link: '',
-            publishedDate: '',
-            title: ''
+        author: [{
+            email: {
+                $t: ''
+            },
+            gd$image: {
+                height: 0,
+                rel: '',
+                src: '',
+                width: 0
+            },
+            name: {
+                $t: ''
+            },
+            uri: {
+                $t: ''
+            }
         }],
-        feedUrl: '',
-        link: '',
-        tilte: '',
-        type: ''
+        entry: [{
+            author: [{
+                email: {
+                    $t: ''
+                },
+                gd$image: {
+                    height: 0,
+                    rel: '',
+                    src: '',
+                    width: 0
+                },
+                name: {
+                    $t: ''
+                },
+                uri: {
+                    $t: ''
+                }
+            }],
+            category: [{
+                scheme: '',
+                term: ''
+            }],
+            summary: {
+                $t: '',
+                type: ''
+            },
+            content: {
+                $t: '',
+                type: ''
+            },
+            id: {
+                $t: ''
+            },
+            link: [{
+                href: '',
+                rel: '',
+                title: '',
+                type: ''
+            }],
+            media$thumbnail: {
+                height: 0,
+                url: '',
+                width: 0,
+                xmlns$media: ''
+            },
+            published: {
+                $t: ''
+            },
+            thr$total: {
+                $t: ''
+            },
+            title: {
+                $t: '',
+                type: ''
+            },
+            updated: {
+                $t: ''
+            }
+        }],
+        link: [{
+            href: '',
+            rel: '',
+            type: ''
+        }],
+        title: {
+            $t: '',
+            type: ''
+        }
     },
     status: {
         code: ''

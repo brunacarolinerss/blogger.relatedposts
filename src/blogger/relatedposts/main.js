@@ -6,6 +6,7 @@ goog.provide('garafu.blogger.relatedposts.Main');
 
 goog.require('garafu.dom');
 goog.require('garafu.events');
+goog.require('garafu.blogger.relatedposts.Settings');
 
 
 // --------------------------------------------------------------------------------
@@ -18,7 +19,18 @@ goog.require('garafu.events');
 * @constructor
 */
 garafu.blogger.relatedposts.Main = function () {
+    this.initialize();
 };
+
+
+// --------------------------------------------------------------------------------
+//  static property
+// --------------------------------------------------------------------------------
+
+/**
+ * Callback functon name string.
+ */
+garafu.blogger.relatedposts.Main.CALLBACK_NAME = 'garafu.blogger.relatedposts.Main.onloading';
 
 
 // --------------------------------------------------------------------------------
@@ -49,10 +61,29 @@ garafu.blogger.relatedposts.Main.labelCount = 0;
 garafu.blogger.relatedposts.Main.recievedCount = 0;
 
 
+/**
+* Singleton instance.
+*/
+garafu.blogger.relatedposts.Main._instance = null;
+
+
 // --------------------------------------------------------------------------------
 //  static method
 // --------------------------------------------------------------------------------
 
+/**
+* Get the singleton instance.
+*/
+garafu.blogger.relatedposts.Main.getInstance = function () {
+    var instance = garafu.blogger.relatedposts.Main._instance;
+
+    if (!instance) {
+        instance = new garafu.blogger.relatedposts.Main();
+        garafu.blogger.relatedposts.Main._instance = instance;
+    }
+
+    return instance;
+};
 
 // --------------------------------------------------------------------------------
 //  method
@@ -61,23 +92,12 @@ garafu.blogger.relatedposts.Main.recievedCount = 0;
 /**
 * Initialize this intance.
 */
-garafu.blogger.relatedposts.Main.initialize = function () {
+garafu.blogger.relatedposts.Main.prototype.initialize = function () {
     var Main = garafu.blogger.relatedposts.Main;
     var settings, element, labels;
 
     // Create settings data
-    settings = RELATEDPOSTS_SETTINGS || {};
-    Main.Settings = {
-        BlogUrl: settings.BlogUrl || window.location.hostname,
-        MaxResults: settings.MaxResults || 5,
-        TitleVisible: typeof(settings.TitleVisible) === 'boolean' ? settings.TitleVisible : true,
-        ThumbnailVisible: typeof(settings.ThumbnailVisible) === 'boolean' ? settings.ThumbnailVisible : true,
-        SnippetVisible: typeof(settings.SnippetVisible) === 'boolean' ? settings.SnippetVisible : true,
-        NoThumbnailImageUrl: typeof(settings.NoThumbnailImageUrl) !== 'undefined' ? settings.NoThumbnailImageUrl : '//4.bp.blogspot.com/-9mCCaXTpn9I/VN4hDMsFXlI/AAAAAAAAC6U/i84N2Ng37Ik/s1600/noimage.png',
-        NoRelatedPostsMessage: typeof(settings.NoRelatedPostsMessage) !== 'undefined' ? settings.NoRelatedPostsMessage : 'No Related Posts...',
-        LabelElementId: settings.LabelElementId || 'blogger.relatedposts.label',
-        OutputElementId: settings.OutputElementId || 'blogger.relatedposts.output'
-    }
+    Main.Settings = new garafu.blogger.relatedposts.Settings();
 
     // Get label information.
     element = document.getElementById(Main.Settings.LabelElementId);
@@ -85,20 +105,19 @@ garafu.blogger.relatedposts.Main.initialize = function () {
     Main.labelCount = labels.length;
 
     // Load create related posts.
-    Main.loadRelatedPosts(labels);
+    this.requestRelatedPosts(labels);
 };
-
 
 /**
 * Load and display related post items.
 * @param    {string[]}  labels      Label name list.
 */
-garafu.blogger.relatedposts.Main.loadRelatedPosts = function (labels) {
+garafu.blogger.relatedposts.Main.prototype.requestRelatedPosts = function (labels) {
     var Main = garafu.blogger.relatedposts.Main;
     var i, url, feed, num;
 
     if (labels.length === 0) {
-        Main.showNoRelatedPostsMessage();
+        this.showNoRelatedPostsMessage();
         return;
     }
 
@@ -107,60 +126,82 @@ garafu.blogger.relatedposts.Main.loadRelatedPosts = function (labels) {
 
     for (i = labels.length; i--;) {
         // Create url.
-        url = window.location.protocol;
-        url += '//' + Main.Settings.BlogUrl + '/';
-        url += 'feeds/posts/default/-/';
-        url += encodeURIComponent((labels[i] || '').replace(/^\s*/, '').replace(/\s*$/, ''));
+        url = this.createRequestUrl(labels[i]);
 
-        // Downlaod feed data.
-        feed = new google.feeds.Feed(url);
-        feed.setResultFormat(google.feeds.Feed.JSON_FORMAT);
-        feed.setNumEntries(num);
-        feed.load(Main.feed_onload);
+        // Create script DOM element.
+        script = document.createElement('script');
+        script.src = url;
+        script.type = 'text/javascript';
+    
+        // Append to the body DOM element.
+        document.body.appendChild(script);
+    }
+};
+
+/**
+* Create request URL.
+* @param    {string}    label string.
+*/
+garafu.blogger.relatedposts.Main.prototype.createRequestUrl = function (label) {
+    var Main = garafu.blogger.relatedposts.Main;
+    var url = '';
+
+    url += '//' + Main.Settings.BlogUrl + '/';
+    url += 'feeds/posts/default/-/';
+    url += encodeURIComponent((label || '').replace(/^\s*/, '').replace(/\s*$/, ''));
+    url += '?';
+    url += 'alt=json&';
+    url += 'callback=';
+    url += Main.CALLBACK_NAME;
+
+    return url;
+};
+
+/**
+* Call when the feed data is recived.
+* @param    {object}    feed data.
+*/
+garafu.blogger.relatedposts.Main.onloading = function (data) {
+    var Main = garafu.blogger.relatedposts.Main;
+    var self = Main.getInstance();
+
+    // Concatinate recieved data.
+    entries = data.feed.entry || [];
+    Main.archives = Main.archives.concat(entries);
+    // Count-up status.
+    Main.recievedCount += 1;
+
+    // Execute loaded event.
+    if (Main.recievedCount >= Main.labelCount) {
+        self.onloaded(Main.archives);
     }
 };
 
 
 /**
+* Call when all feed data are recived.
+* @param    {object[]*  all feed data.
+*/
+garafu.blogger.relatedposts.Main.prototype.onloaded = function (archives) {
+    var Main = garafu.blogger.relatedposts.Main;
+    this.createPostList(archives);
+};
+
+/**
 * Show no related posts message.
 */
-garafu.blogger.relatedposts.Main.showNoRelatedPostsMessage = function () {
+garafu.blogger.relatedposts.Main.prototype.showNoRelatedPostsMessage = function () {
     var Main = garafu.blogger.relatedposts.Main;
 
     output = document.getElementById(Main.Settings.OutputElementId);
     output.appendChild(document.createTextNode(Main.Settings.NoRelatedPostsMessage));
 };
 
-
-/**
-* Callback when the google feed api is executed.
-* @param    {object}    result      Feed data.
-*/
-garafu.blogger.relatedposts.Main.feed_onload = function (result) {
-    var Main = garafu.blogger.relatedposts.Main;
-    var i, length, entries, ul, li, div;
-
-    if(result.status.code !== 200) {
-        return;
-    }
-
-    entries = result.feed.entries || [];
-    Main.archives = Main.archives.concat(entries);
-    Main.recievedCount += 1;
-
-    if (Main.recievedCount < Main.labelCount) {
-        return;
-    } else {
-        Main.createPostList(Main.archives);
-    }
-};
-
-
 /**
 * Create DOM element that indicate post list.
 * @param    {object[]}  entries     Post entry list.
 */
-garafu.blogger.relatedposts.Main.createPostList = function (entries) {
+garafu.blogger.relatedposts.Main.prototype.createPostList = function (entries) {
     var Main = garafu.blogger.relatedposts.Main;
     var n, i, length, ul, li, div, output;
     var CurrentPostUrl = document.location.href;
@@ -169,7 +210,7 @@ garafu.blogger.relatedposts.Main.createPostList = function (entries) {
     // Get the number of displaying entries.
     length = (entries.length < MaxResults) ? entries.length : MaxResults
     if (length === 0) {
-        Main.showNoRelatedPostsMessage();
+        this.showNoRelatedPostsMessage();
         return;
     }
 
@@ -184,7 +225,7 @@ garafu.blogger.relatedposts.Main.createPostList = function (entries) {
         // Whether the entry is current post or not.
         if (CurrentPostUrl !== entries[n].link) {
             // Create item element.
-            div = Main.createPostItem(entries[n]);
+            div = this.createPostItem(entries[n]);
 
             // Append and construct list.
             li = document.createElement('li');
@@ -210,9 +251,10 @@ garafu.blogger.relatedposts.Main.createPostList = function (entries) {
 * @param    {object}    entry       Post entry data.
 * @return   {DOMelement}
 */
-garafu.blogger.relatedposts.Main.createPostItem = function (entry) {
+garafu.blogger.relatedposts.Main.prototype.createPostItem = function (entry) {
     var Settings = garafu.blogger.relatedposts.Main.Settings;
-    var content, thumbnail, title, ancher, summary, image, url;
+    var regexp = /https?:(\/\/[\w\-\.~#\$&\+\/:=\?%]+)/;
+    var content, thumbnail, title, anchor, summary, image, url;
 
     // Create container element.
     content = document.createElement('div');
@@ -220,19 +262,19 @@ garafu.blogger.relatedposts.Main.createPostItem = function (entry) {
 
     // Create thumbnail element, if required.
     if (Settings.ThumbnailVisible) {
-        image = (entry.content || '').match(/<img.*?src=['"](.*?)["'].*?>/);
+        image = (entry.content.$t || '').match(/<img.*?src=['"](.*?)["'].*?>/);
         url = image && image[1] ||Settings.NoThumbnailImageUrl;
         if (url) {
             thumbnail = document.createElement('div');
             thumbnail.className = 'item-thumbnail';
-            ancher = document.createElement('a');
-            ancher.href = entry.link;
+            anchor = document.createElement('a');
+            anchor.href = entry.link;
             image = document.createElement('img');
             image.style.width = '72px';
             image.style.height = '72px';
             image.src = url;
-            ancher.appendChild(image);
-            thumbnail.appendChild(ancher);
+            anchor.appendChild(image);
+            thumbnail.appendChild(anchor);
             content.appendChild(thumbnail);
         }
     }
@@ -241,10 +283,10 @@ garafu.blogger.relatedposts.Main.createPostItem = function (entry) {
     if (Settings.TitleVisible) {
         title = document.createElement('div');
         title.className = 'item-title';
-        ancher = document.createElement('a');
-        ancher.href = entry.link;
-        ancher.appendChild(document.createTextNode(entry.title))
-        title.appendChild(ancher);
+        anchor = document.createElement('a');
+        anchor.href = regexp.exec(entry.link[entry.link.length - 1].href)[1];
+        anchor.appendChild(document.createTextNode(entry.title.$t))
+        title.appendChild(anchor);
         content.appendChild(title);
     }
 
@@ -252,17 +294,46 @@ garafu.blogger.relatedposts.Main.createPostItem = function (entry) {
     if (Settings.SnippetVisible) {
         summary = document.createElement('div');
         summary.className = 'item-snippet';
-        summary.innerHTML = entry.contentSnippet;
+        summary.appendChild(document.createTextNode(this.createSunippet(entry.content.$t || '')));
         content.appendChild(summary);
     }
 
     return content;
 };
 
+/**
+* Create snippet string.
+* @param    {string}    original html string.
+*/
+garafu.blogger.relatedposts.Main.prototype.createSunippet = function (text) {
+    var maxlength = garafu.blogger.relatedposts.Main.Settings.SnippetMaxLength;
+    var snippet = '';
+
+    // Remove waste strings.
+    text = text.replace(/<!--[\s\S]*-->/g, '');
+    text = text.replace(/<style[\s\S="']*>[\s\S]*<\/style>/g, '');
+    text = text.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
+    
+    // Cutoff long string.
+    if (text.length < maxlength + 4) {
+        snippet = text;
+    } else {
+        snippet += text.substring(0, maxlength - 4);
+        snippet += ' ...';
+    }
+
+    return snippet;
+}
 
 // --------------------------------------------------------------------------------
-google.load('feeds', '1');
-google.setOnLoadCallback(garafu.blogger.relatedposts.Main.initialize);
+// Create initial instance.
+garafu.events.addEventHandler(window, 'load', function () {
+    // Create initial singleton instance.
+    garafu.blogger.relatedposts.Main.getInstance();
+});
 
 
+// --------------------------------------------------------------------------------
+// Exports static function.
+goog.exportSymbol(garafu.blogger.relatedposts.Main.CALLBACK_NAME, garafu.blogger.relatedposts.Main.onloading);
 

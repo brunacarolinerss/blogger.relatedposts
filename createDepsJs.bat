@@ -14,7 +14,7 @@ set CLOSURECOMPILERJAR=.\lib\closure-compiler\compiler.jar
 set CLOSURE_LIBRARY_DIR=.\lib\closure-library\closure\goog
 set CLOSERU_LIBRARY_THIRD_DIR=.\lib\closure-library\third_party\closure\goog
 set SOURCE_CODE_DIR=.\src
-set MAIN_CLASS_NAME=garafu.blogger.TOC
+set MAIN_CLASS_NAME=garafu.blogger.relatedposts.Main
 set OUTPUT_FILE=.\src\deps.js
 
 
