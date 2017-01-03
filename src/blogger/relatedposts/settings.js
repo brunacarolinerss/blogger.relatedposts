@@ -50,7 +50,8 @@ garafu.blogger.relatedposts.Settings.prototype.createDefaultSettings = function 
         SnippetVisible: true,
         SnippetMaxLength: 120,
         NoThumbnailImageUrl: '//4.bp.blogspot.com/-9mCCaXTpn9I/VN4hDMsFXlI/AAAAAAAAC6U/i84N2Ng37Ik/s1600/noimage.png',
-        NoRelatedPostsMessage: 'No Related Posts...',
+        LoadingMessage: 'Loading ...',
+        NoRelatedPostsMessage: 'No Related Posts.',
         LabelElementId: 'blogger.relatedposts.label',
         OutputElementId: 'blogger.relatedposts.output'
     };

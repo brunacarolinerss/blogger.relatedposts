@@ -1,20 +1,22 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <script type="text/javascript">
-var RELATEDPOSTS_SETTINGS = {
-    BlogUrl: 'garafu.blogspot.jp',
-    MaxResults: 5,
-    ThumbnailVisible: true
-};
-  </script>
-  <script type="text/javascript" src="../build/blogger.relatedposts.min.js"></script>
+  <title>compile</title>
+  <link href='//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet' type='text/css' />
 </head>
 <body>
-    <div id='blogger.relatedposts.label'>
-        IIS,jasmine,JavaScript,jQuery
-    </div>
-    <div id='blogger.relatedposts.output'></div>
+  <div id='blogger.relatedposts.label'>
+      IIS,jasmine,JavaScript,jQuery
+  </div>
+  <div id='blogger.relatedposts.output'></div>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    var RELATEDPOSTS_SETTINGS = {
+      BlogUrl: 'garafu.blogspot.jp',
+      MaxResults: 5,
+      LoadingMessage: '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>'
+    };
+  </script>
+  <script type="text/javascript" src="../build/blogger.relatedposts.min.js"></script>
 </body>
 </html>

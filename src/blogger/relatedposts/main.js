@@ -97,12 +97,16 @@ garafu.blogger.relatedposts.Main.prototype.initialize = function () {
     var settings, element, labels;
 
     // Create settings data
-    Main.Settings = new garafu.blogger.relatedposts.Settings();
+    settings = Main.Settings = new garafu.blogger.relatedposts.Settings();
 
     // Get label information.
-    element = document.getElementById(Main.Settings.LabelElementId);
+    element = document.getElementById(settings.LabelElementId);
     labels = element.innerText.split(',');
     Main.labelCount = labels.length;
+
+    // Set loading message.
+    element = document.getElementById(settings.OutputElementId);
+    element.innerHTML = settings.LoadingMessage;
 
     // Load create related posts.
     this.requestRelatedPosts(labels);
@@ -180,26 +184,42 @@ garafu.blogger.relatedposts.Main.onloading = function (data) {
 
 /**
 * Call when all feed data are recived.
-* @param    {object[]*  all feed data.
+* @param    {object[]}  all feed data.
 */
-garafu.blogger.relatedposts.Main.prototype.onloaded = function (archives) {
+garafu.blogger.relatedposts.Main.prototype.onloaded = function (entries) {
     var Main = garafu.blogger.relatedposts.Main;
-    this.createPostList(archives);
+    var settings = Main.Settings;
+    var output = document.getElementById(settings.OutputElementId);
+    var contents;
+
+    // Remove loading message.
+    garafu.dom.removeChildren(output);
+
+    // Create displayinig contents.
+    if (entries.length !== 0) {
+        contents = this.createPostList(entries);
+    } else {
+        contents = this.createNoRelatedPostsMessage();
+    }
+
+    // Show contents.
+    output.appendChild(contents);
 };
 
 /**
-* Show no related posts message.
+* Create no related posts message.
+* @return   {DOMElement}    
 */
-garafu.blogger.relatedposts.Main.prototype.showNoRelatedPostsMessage = function () {
+garafu.blogger.relatedposts.Main.prototype.createNoRelatedPostsMessage = function () {
     var Main = garafu.blogger.relatedposts.Main;
 
-    output = document.getElementById(Main.Settings.OutputElementId);
-    output.appendChild(document.createTextNode(Main.Settings.NoRelatedPostsMessage));
+    return document.createTextNode(Main.Settings.NoRelatedPostsMessage);
 };
 
 /**
 * Create DOM element that indicate post list.
 * @param    {object[]}  entries     Post entry list.
+* @return   {DOMElement}
 */
 garafu.blogger.relatedposts.Main.prototype.createPostList = function (entries) {
     var Main = garafu.blogger.relatedposts.Main;
@@ -209,10 +229,6 @@ garafu.blogger.relatedposts.Main.prototype.createPostList = function (entries) {
 
     // Get the number of displaying entries.
     length = (entries.length < MaxResults) ? entries.length : MaxResults
-    if (length === 0) {
-        this.showNoRelatedPostsMessage();
-        return;
-    }
 
     // Create list root element.
     ul = document.createElement('ul');
@@ -240,9 +256,7 @@ garafu.blogger.relatedposts.Main.prototype.createPostList = function (entries) {
         entries.splice(n, 1);
     }
 
-    // Show related posts list.
-    output = document.getElementById(Main.Settings.OutputElementId);
-    output.appendChild(ul);
+    return ul;
 };
 
 
@@ -301,6 +315,7 @@ garafu.blogger.relatedposts.Main.prototype.createPostItem = function (entry) {
 /**
 * Create snippet string.
 * @param    {string}    original html string.
+* @return   {string}
 */
 garafu.blogger.relatedposts.Main.prototype.createSunippet = function (text) {
     var maxlength = garafu.blogger.relatedposts.Main.Settings.SnippetMaxLength;

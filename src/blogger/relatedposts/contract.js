@@ -115,7 +115,9 @@ var RELATEDPOSTS_SETTINGS = {
     TitleVisible: true,
     ThumbnailVisible: true,
     SnippetVisible: true,
-    NoThumbnailImageUrl: 'http://4.bp.blogspot.com/-9mCCaXTpn9I/VN4hDMsFXlI/AAAAAAAAC6U/i84N2Ng37Ik/s1600/noimage.png',
+    SnippetMaxLength: 120,
+    NoThumbnailImageUrl: '//4.bp.blogspot.com/-9mCCaXTpn9I/VN4hDMsFXlI/AAAAAAAAC6U/i84N2Ng37Ik/s1600/noimage.png',
+    LoadingMessage: 'Loading ...',
     NoRelatedPostsMessage: 'No Related Posts...',
     LabelElementId: '',
     OutputElementId: ''
